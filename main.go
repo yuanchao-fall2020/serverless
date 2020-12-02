@@ -40,7 +40,7 @@ func main() {
 	// Create a new session in the us-west-2 region.
 	// Replace us-west-2 with the AWS Region you're using for Amazon SES.
 	sess, err := session.NewSession(&aws.Config{
-		Region:aws.String("us-west-2")},
+		Region:aws.String("us-east-1")},
 	)
 
 	// Create an SES session.
