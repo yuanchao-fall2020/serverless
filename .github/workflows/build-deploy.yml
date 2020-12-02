@@ -1,0 +1,71 @@
+# This is a basic workflow to build and deploy webapp with Actions
+
+name: Build & Deploy WebApp
+
+env:
+  ARTIFACT_NAME: function.zip
+  AWS_REGION: us-east-1
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  ci_cd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.13
+        id: go
+
+      - name: Go Build
+        run: |
+          echo "${{ env.ARTIFACT_NAME }}"
+          pwd
+          ls
+          env GOOS=linux GOARCH=amd64 go build main.go
+          pwd
+          ls -al
+
+      - name: Build Deployment Artifact
+        run: |
+          mkdir lambda_deploy
+          zip ${{ env.ARTIFACT_NAME }} main
+          pwd
+          ls -al
+          mv ${{ env.ARTIFACT_NAME }} lambda_deploy/
+          ls -al
+          pwd
+          cd lambda_deploy
+          pwd
+          ls -al
+          cd ..
+          pwd
+          ls -al
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Copy Artifact to S3
+        run: |
+          aws s3 sync ./lambda_deploy s3://${{ secrets.S3_CODEDEPLOY_BUCKET }}
+
+      - name: CodeDeploy API call
+        run: |
+          output=$(aws lambda update-function-code \
+                       --function-name  lambda_function \
+                       --s3-bucket ${{ secrets.S3_CODEDEPLOY_BUCKET }} \
+                       --s3-key ${{ env.ARTIFACT_NAME }} \
+                       --output json)
+
+          echo $output
+
