@@ -59,6 +59,8 @@ func sendSNSEmail(s string) {
 	// Create an SES session.
 	svc := ses.New(sess)
 
+	//arr := strings.Split(s, ",")
+
 	arr := strings.Split(s, ",")
 	flag := -1
 	if arr[0] == "Create an answer" {
@@ -91,14 +93,19 @@ func sendSNSEmail(s string) {
 	}
 
 	link := "prod.martinyuan.me/v1/question/" + questionId
-	HtmlBody := "<h1>Web App Notification Email </h1><p>The link is " +
+	/*HtmlBody := "<h1>Web App Notification Email </h1><p>The link is " +
 		"<a href='" + link + "'>Amazon SES</a> \n" + s1 + "\n" +
 		"question_id: " + questionId + "\n" +
 		"question_owner_email: " + qUserEmail + "\n" +
 		"answer_id: " + answerId + "\n" +
-		"answer_text: " + answerTxt + "</p>"
+		"answer_text: " + answerTxt + "</p>"*/
 	//Recipient := qUserEmail
-	TextBody := "Web App Notification Email !!!"
+	TextBody := "Web App Notification Email ... \n The link is " +
+		link + "." + s1 + "\n" +
+		"question_id: " + questionId + "\n" +
+		"question_owner_email: " + qUserEmail + "\n" +
+		"answer_id: " + answerId + "\n" +
+		"answer_text: " + answerTxt
 	// Assemble the email.
 	input := &ses.SendEmailInput{
 		Destination: &ses.Destination{
@@ -110,10 +117,10 @@ func sendSNSEmail(s string) {
 		},
 		Message: &ses.Message{
 			Body: &ses.Body{
-				Html: &ses.Content{
+				/*Html: &ses.Content{
 					Charset: aws.String(CharSet),
 					Data:    aws.String(HtmlBody),
-				},
+				},*/
 				Text: &ses.Content{
 					Charset: aws.String(CharSet),
 					Data:    aws.String(TextBody),
