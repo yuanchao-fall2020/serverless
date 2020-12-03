@@ -19,7 +19,7 @@ const (
 
 	// Replace recipient@example.com with a "To" address. If your account
 	// is still in the sandbox, this address must be verified.
-	//Recipient = "chaoyiyuan1@gmail.com"
+	Recipient = "chaoyiyuan1@gmail.com"
 
 	// Specify a configuration set. To use a configuration
 	// set, comment the next line and line 92.
@@ -97,7 +97,7 @@ func sendSNSEmail(s string) {
 		"question_owner_email: " + qUserEmail + "\n" +
 		"answer_id: " + answerId + "\n" +
 		"answer_text: " + answerTxt + "</p>"
-	Recipient := qUserEmail
+	//Recipient := qUserEmail
 	TextBody := "Web App Notification Email !!!"
 	// Assemble the email.
 	input := &ses.SendEmailInput{
