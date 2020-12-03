@@ -234,8 +234,6 @@ func searchItemInDynamoDB(TextBody string) bool {
 	return true
 }
 
-//add the email to DynomoDB to avoid sending duplicate emails to users
-//refer to https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/dynamo-example-create-table-item.html
 func addItemToDynamoDB(TextBody string) error {
 	//initialize dynamodb client
 	svc_db := initDBClient()
