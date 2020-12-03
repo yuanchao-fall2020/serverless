@@ -43,9 +43,15 @@ func handler(ctx context.Context, snsEvent events.SNSEvent) {
 	for _, record := range snsEvent.Records {
 		snsRecord := record.SNS
 		fmt.Printf("[%s %s] Message = %s \n", record.EventSource, snsRecord.Timestamp, snsRecord.Message)
-		//sendSNSEmail(snsRecord.Message)
-
+		sendSNSEmail(snsRecord.Message)
+		//tmp := snsRecord.Message
 	}
+	/*
+
+	*/
+}
+
+func sendSNSEmail(s string) {
 	// Create a new session in the us-west-2 region.
 	// Replace us-west-2 with the AWS Region you're using for Amazon SES.
 	sess, err := session.NewSession(&aws.Config{
