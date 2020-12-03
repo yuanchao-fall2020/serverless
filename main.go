@@ -28,12 +28,12 @@ const (
 	Subject = "Web App Notification"
 
 	// The HTML body for the email.
-	HtmlBody =  "<h1>Amazon SES Test Email (AWS SDK for Go)</h1><p>This email was sent with " +
+	/*HtmlBody =  "<h1>Amazon SES Test Email (AWS SDK for Go)</h1><p>This email was sent with " +
 		"<a href='https://aws.amazon.com/ses/'>Amazon SES</a> using the " +
-		"<a href='prod.martinyuan.me/v1/question/75a29301-ff02-4cab-a14c-8139cfec39c7'>AWS SDK for Go</a>.</p>"
+		"<a href='prod.martinyuan.me/v1/question/75a29301-ff02-4cab-a14c-8139cfec39c7'>AWS SDK for Go</a>.</p>"*/
 
 	//The email body for recipients with non-HTML email clients.
-	//TextBody = "This email was sent with Amazon SES using the AWS SDK for Go."
+	/*TextBody = "This email was sent with Amazon SES using the AWS SDK for Go."*/
 
 	// The character encoding for the email.
 	CharSet = "UTF-8"
@@ -64,6 +64,7 @@ func sendSNSEmail(s string) {
 	//tmp := strings.Split(s, ",")
 
 	TextBody := s
+	HtmlBody := s
 
 	// Assemble the email.
 	input := &ses.SendEmailInput{
