@@ -113,13 +113,14 @@ func sendSNSEmail(s string) {
 				"arr[2]: " + arr[2] + "\n" +
 				"arr[3]: " + arr[3] + "\n" +
 				"arr[4]: " + arr[4] + "\n"*/
+	Recipient := arr[2]
 	TextBody := "The user " + arr[0] + ". Please go to this link.\n" +
 				"prod.martinyuan.me/v1/question/" + arr[1] + " \n" +
 				"question id: " + arr[1] + "\n" +
 				"question owner email: " + arr[2] + "\n" +
 				"answer id: " + arr[3] + "\n" +
 				"answer text: " + arr[4] + "\n"
-	Recipient := arr[2]
+
 
 	//search for email, if already sent, return, otherwise, put in DynamoDB table, and send email
 	isExist := searchItemInDynamoDB(TextBody)
