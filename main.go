@@ -62,7 +62,7 @@ func sendSNSEmail(s string) {
 	//arr := strings.Split(s, ",")
 
 	arr := strings.Split(s, ",")
-	flag := -1
+	/*flag := -1
 	if arr[0] == "Create an answer" {
 		flag = 0
 	} else if arr[0] == "Update an answer" {
@@ -100,12 +100,13 @@ func sendSNSEmail(s string) {
 		"answer_id: " + answerId + "\n" +
 		"answer_text: " + answerTxt + "</p>"*/
 	//Recipient := qUserEmail
-	TextBody := "Web App Notification Email ... \n The link is " +
+	/*TextBody := "Web App Notification Email ... \n The link is " +
 		link + "." + s1 + "\n" +
 		"question_id: " + questionId + "\n" +
 		"question_owner_email: " + qUserEmail + "\n" +
 		"answer_id: " + answerId + "\n" +
-		"answer_text: " + answerTxt
+		"answer_text: " + answerTxt*/
+	TextBody := arr[0] + ", " + arr[1] + ", " + arr[2]
 	// Assemble the email.
 	input := &ses.SendEmailInput{
 		Destination: &ses.Destination{
