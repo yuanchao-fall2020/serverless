@@ -33,7 +33,7 @@ const (
 		"<a href='prod.martinyuan.me/v1/question/75a29301-ff02-4cab-a14c-8139cfec39c7'>AWS SDK for Go</a>.</p>"
 
 	//The email body for recipients with non-HTML email clients.
-	TextBody = "This email was sent with Amazon SES using the AWS SDK for Go."
+	//TextBody = "This email was sent with Amazon SES using the AWS SDK for Go."
 
 	// The character encoding for the email.
 	CharSet = "UTF-8"
@@ -60,6 +60,10 @@ func sendSNSEmail(s string) {
 
 	// Create an SES session.
 	svc := ses.New(sess)
+
+	//tmp := strings.Split(s, ",")
+
+	TextBody := s
 
 	// Assemble the email.
 	input := &ses.SendEmailInput{
