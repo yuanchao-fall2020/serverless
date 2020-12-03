@@ -8,7 +8,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/ses"
+	"log"
 	"strings"
 )
 
@@ -112,8 +114,26 @@ func sendSNSEmail(s string) {
 				"arr[3]: " + arr[3] + "\n" +
 				"arr[4]: " + arr[4] + "\n"*/
 	TextBody := "The user " + arr[0] + ". Please go to this link.\n" +
-				"prod.martinyuan.me/v1/question/" + arr[1]
-	Recipient := "chaoyiyuan1@gmail.com"
+				"prod.martinyuan.me/v1/question/" + arr[1] + " \n" +
+				"arr[0]: " + arr[0] + "\n" +
+				"arr[1]: " + arr[1] + "\n" +
+				"arr[2]: " + arr[2] + "\n" +
+				"arr[3]: " + arr[3] + "\n" +
+				"arr[4]: " + arr[4] + "\n"
+	Recipient := arr[2]
+
+	//search for email, if already sent, return, otherwise, put in DynamoDB table, and send email
+	isExist := searchItemInDynamoDB(TextBody)
+	if isExist {
+		log.Println("The email has already been sent")
+		return
+	}
+
+	if err := addItemToDynamoDB(TextBody); err != nil {
+		log.Printf("Failed to put email item into DynamoDB table: %v", err)
+		return
+	}
+
 	// Assemble the email.
 	input := &ses.SendEmailInput{
 		Destination: &ses.Destination{
@@ -173,7 +193,74 @@ func sendSNSEmail(s string) {
 	fmt.Println(result)
 }
 
+var svc_db *dynamodb.DynamoDB
 
+func initDBClient() *dynamodb.DynamoDB {
+	if svc_db == nil {
+		sess, _ := session.NewSession(&aws.Config{
+			Region:aws.String("us-east-1")},
+		)
+		// Create S3 service client
+		svc_db = dynamodb.New(sess)
+	}
+
+	return svc_db
+}
+
+func searchItemInDynamoDB(TextBody string) bool {
+	//initialize dynamodb client
+	svc_db := initDBClient()
+
+	tableName := "csye6225"
+
+	result, err := svc_db.GetItem(&dynamodb.GetItemInput{
+		TableName: aws.String(tableName),
+		Key: map[string]*dynamodb.AttributeValue{
+			"id": {
+				S: aws.String(TextBody),
+			},
+		},
+	})
+	if err != nil {
+		log.Println(err.Error())
+		return false
+	}
+	if result.Item == nil {
+		log.Println("Search email in dynamodb: false")
+		return false
+	}
+
+	log.Printf("Got item output: %v", result)
+	return true
+}
+
+func addItemToDynamoDB(TextBody string) error {
+	//initialize dynamodb client
+	svc_db := initDBClient()
+
+	tableName := "csye6225"
+
+	item := map[string]*dynamodb.AttributeValue{
+		"id": {
+			S: aws.String(TextBody),
+		},
+	}
+
+	input := &dynamodb.PutItemInput{
+		Item:      item,
+		TableName: aws.String(tableName),
+	}
+
+	_, err := svc_db.PutItem(input)
+	if err != nil {
+		log.Printf("Got error calling PutItem: %v\n", err)
+		return err
+	}
+
+	log.Println("Successfully added email: '" + TextBody + "'")
+
+	return nil
+}
 
 func main() {
 	lambda.Start(handler)
