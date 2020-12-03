@@ -107,7 +107,7 @@ func sendSNSEmail(s string) {
 		"answer_id: " + answerId + "\n" +
 		"answer_text: " + answerTxt*/
 	TextBody := "prod.martinyuan.me/v1/question/" + arr[1]
-	Recipient := arr[2]
+	Recipient := "chaoyiyuan1@gmail.com"
 	// Assemble the email.
 	input := &ses.SendEmailInput{
 		Destination: &ses.Destination{
